@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Relational Algebra Implementations"
 output: html_notebook
 ---
 
@@ -10,6 +10,7 @@ library(DBI)
 reuters <- dbConnect(RSQLite::SQLite(), dbname = "reuters.db")
 
 ```
+
 
 
 Write an SQL statement that is equivalent to the following relational algebra expression: 
@@ -30,6 +31,7 @@ SELECT count(*) FROM (
 ```
 
 
+
 Write an SQL statement to count the number of documents containing the word "parliament."
 
 ```{sql connection="reuters"}
@@ -43,6 +45,7 @@ SELECT count(*) FROM (
 	AND count > 0);
 
 ```
+
 
 
 Write an SQL statement to find all documents that have more than 300 total terms, including duplicate terms.
