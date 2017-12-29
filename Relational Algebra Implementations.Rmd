@@ -4,9 +4,6 @@ output: html_notebook
 ---
 
 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-
 ```{r setup}
 
 library(DBI)
@@ -15,11 +12,9 @@ reuters <- dbConnect(RSQLite::SQLite(), dbname = "reuters.db")
 ```
 
 
-An SQL statement that is equivalent to the following relational algebra expression: 
+Write an SQL statement that is equivalent to the following relational algebra expression: 
 
 πterm(σdocid=10398_txt_earn and count=1(frequency)) U πterm(σdocid=925_txt_trade and count=1(frequency))
-
-
 
 
 ```{sql connection="reuters"}
@@ -32,13 +27,53 @@ SELECT count(*) FROM (
 	WHERE docid = '925_txt_trade'
 	AND count = 1);
 
+```
+
+
+Write an SQL statement to count the number of documents containing the word "parliament."
+
+```{sql connection="reuters"}
+
+SELECT count(*) FROM (
+	SELECT docid FROM frequency
+	WHERE term = 'law'
+	AND count > 0
+	UNION SELECT docid FROM frequency
+	WHERE term = 'legal'
+	AND count > 0);
 
 ```
 
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+Write an SQL statement to find all documents that have more than 300 total terms, including duplicate terms.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+```{sql connection="reuters"}
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+SELECT COUNT(*) FROM (	
+	SELECT docid, Total FROM (
+		SELECT docid, SUM(count/count) as Total FROM frequency
+		GROUP BY docid
+		ORDER BY docid)
+		WHERE Total > 300
+);
+
+```
+
+Write an SQL statement to count the number of unique documents that contain both the word 'transactions' and the word 'world'.
+
+```{sql connection="reuters"}
+
+SELECT COUNT(*) FROM (
+	
+	SELECT docid From frequency
+	WHERE TERM = 'transactions'
+	
+	INTERSECT
+	
+	SELECT docid From frequency
+	WHERE TERM = 'world'
+);
+
+```
+
 

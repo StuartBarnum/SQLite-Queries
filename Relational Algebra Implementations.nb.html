@@ -173,7 +173,6 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShEQkkpXG5yZXV0ZXJzIDwtIGRiQ29ubmVjdChSU1FMaXRlOjpTUUxpdGUoKSwgZGJuYW1lID0gXCJyZXV0ZXJzLmRiXCIpXG5gYGAifQ== -->
@@ -182,7 +181,7 @@ reuters &lt;- dbConnect(RSQLite::SQLite(), dbname = &quot;reuters.db&quot;)</cod
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>An SQL statement that is equivalent to the following relational algebra expression:</p>
+<p>Write an SQL statement that is equivalent to the following relational algebra expression:</p>
 <p>πterm(σdocid=10398_txt_earn and count=1(frequency)) U πterm(σdocid=925_txt_trade and count=1(frequency))</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
@@ -206,12 +205,81 @@ SELECT count(*) FROM (
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
+<p>Write an SQL statement to count the number of documents containing the word “parliament.”</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgc3FsXG5cblNFTEVDVCBjb3VudCgqKSBGUk9NIChcblx0U0VMRUNUIGRvY2lkIEZST00gZnJlcXVlbmN5XG5cdFdIRVJFIHRlcm0gPSAnbGF3J1xuXHRBTkQgY291bnQgPiAwXG5cdFVOSU9OIFNFTEVDVCBkb2NpZCBGUk9NIGZyZXF1ZW5jeVxuXHRXSEVSRSB0ZXJtID0gJ2xlZ2FsJ1xuXHRBTkQgY291bnQgPiAwKTtcblxuYGBgIn0= -->
+<pre class="sql"><code>
+SELECT count(*) FROM (
+    SELECT docid FROM frequency
+    WHERE term = 'law'
+    AND count &gt; 0
+    UNION SELECT docid FROM frequency
+    WHERE term = 'legal'
+    AND count &gt; 0);
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6W10sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWVdaZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0Jnc3dNUEJDYVNzMFJheDVpYm1weFVDR0FKSWdSM0orYVY2SmhwWW11dUxrbk1SaWRNVmNLWWtsaVhwcFJVQnowSlJ6RnVXWDY4SE1Cem1BcVFGSS9BY0NJUFVQaEFHbXJHTm94UUFBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["count(*)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"58"}],"options":{"columns":{"min":{},"max":[10],"total":{}},"rows":{"min":[10],"max":[10],"total":{}},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Write an SQL statement to find all documents that have more than 300 total terms, including duplicate terms.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgc3FsXG5cblNFTEVDVCBDT1VOVCgqKSBGUk9NIChcdFxuXHRTRUxFQ1QgZG9jaWQsIFRvdGFsIEZST00gKFxuXHRcdFNFTEVDVCBkb2NpZCwgU1VNKGNvdW50L2NvdW50KSBhcyBUb3RhbCBGUk9NIGZyZXF1ZW5jeVxuXHRcdEdST1VQIEJZIGRvY2lkXG5cdFx0T1JERVIgQlkgZG9jaWQpXG5cdFx0V0hFUkUgVG90YWwgPiAzMDBcbik7XG5cbmBgYCJ9 -->
+<pre class="sql"><code>
+SELECT COUNT(*) FROM (  
+    SELECT docid, Total FROM (
+        SELECT docid, SUM(count/count) as Total FROM frequency
+        GROUP BY docid
+        ORDER BY docid)
+        WHERE Total &gt; 300
+);
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6W10sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWVdaZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0Jnc3dNUEJDYVc0MFJheDVpYm1weFVDR0FKSWdoN04vcUYrSWhwWW11dUxrbk1SaWRNVmNLWWtsaVhwcFJVQnowSlJ6RnVXWDY4SE1Cem1BcVFGSS9BY0NJUFVQaEFIRVZ1NDV4UUFBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["COUNT(*)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"11"}],"options":{"columns":{"min":{},"max":[10],"total":{}},"rows":{"min":[10],"max":[10],"total":{}},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Write an SQL statement to count the number of unique documents that contain both the word ‘transactions’ and the word ‘world’.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgc3FsXG5cblNFTEVDVCBDT1VOVCgqKSBGUk9NIChcblx0XG5cdFNFTEVDVCBkb2NpZCBGcm9tIGZyZXF1ZW5jeVxuXHRXSEVSRSBURVJNID0gJ3RyYW5zYWN0aW9ucydcblx0XG5cdElOVEVSU0VDVFxuXHRcblx0U0VMRUNUIGRvY2lkIEZyb20gZnJlcXVlbmN5XG5cdFdIRVJFIFRFUk0gPSAnd29ybGQnXG4pO1xuXG5gYGAifQ== -->
+<pre class="sql"><code>
+SELECT COUNT(*) FROM (
+    
+    SELECT docid From frequency
+    WHERE TERM = 'transactions'
+    
+    INTERSECT
+    
+    SELECT docid From frequency
+    WHERE TERM = 'world'
+);
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6W10sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERpaXVCaVlHQmdZbUJtWVdaZ1lnWXlXWmlBQkNNREN3TW5pSzVnWUdBV0Jnc3dNUEJDYVdZMFJheDVpYm1weFVDR0FKSWdoN04vcUYrSWhwWW11dUxrbk1SaWRNVmNLWWtsaVhwcFJVQnowSlJ6RnVXWDY4SE1Cem1BcVFGSS9BY0NJUFVQaEFHLzRNUG94UUFBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["COUNT(*)"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"3"}],"options":{"columns":{"min":{},"max":[10],"total":{}},"rows":{"min":[10],"max":[10],"total":{}},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ21kK1NoaWZ0K0VudGVyKi4gCgpgYGB7ciBzZXR1cH0KCmxpYnJhcnkoREJJKQpyZXV0ZXJzIDwtIGRiQ29ubmVjdChSU1FMaXRlOjpTUUxpdGUoKSwgZGJuYW1lID0gInJldXRlcnMuZGIiKQoKYGBgCgoKQW4gU1FMIHN0YXRlbWVudCB0aGF0IGlzIGVxdWl2YWxlbnQgdG8gdGhlIGZvbGxvd2luZyByZWxhdGlvbmFsIGFsZ2VicmEgZXhwcmVzc2lvbjogCgrPgHRlcm0oz4Nkb2NpZD0xMDM5OF90eHRfZWFybiBhbmQgY291bnQ9MShmcmVxdWVuY3kpKSBVIM+AdGVybSjPg2RvY2lkPTkyNV90eHRfdHJhZGUgYW5kIGNvdW50PTEoZnJlcXVlbmN5KSkKCgoKCmBgYHtzcWwgY29ubmVjdGlvbj0icmV1dGVycyJ9CgpTRUxFQ1QgY291bnQoKikgRlJPTSAoCglTRUxFQ1QgdGVybSBGUk9NIGZyZXF1ZW5jeQoJV0hFUkUgZG9jaWQgPSAnMTAzOThfdHh0X2Vhcm4nCglBTkQgY291bnQgPSAxCglVTklPTiBTRUxFQ1QgdGVybSBGUk9NIGZyZXF1ZW5jeQoJV0hFUkUgZG9jaWQgPSAnOTI1X3R4dF90cmFkZScKCUFORCBjb3VudCA9IDEpOwoKCmBgYAoKCkFkZCBhIG5ldyBjaHVuayBieSBjbGlja2luZyB0aGUgKkluc2VydCBDaHVuayogYnV0dG9uIG9uIHRoZSB0b29sYmFyIG9yIGJ5IHByZXNzaW5nICpDbWQrT3B0aW9uK0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDbWQrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4gCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKCmBgYHtyIHNldHVwfQoKbGlicmFyeShEQkkpCnJldXRlcnMgPC0gZGJDb25uZWN0KFJTUUxpdGU6OlNRTGl0ZSgpLCBkYm5hbWUgPSAicmV1dGVycy5kYiIpCgpgYGAKCgpXcml0ZSBhbiBTUUwgc3RhdGVtZW50IHRoYXQgaXMgZXF1aXZhbGVudCB0byB0aGUgZm9sbG93aW5nIHJlbGF0aW9uYWwgYWxnZWJyYSBleHByZXNzaW9uOiAKCs+AdGVybSjPg2RvY2lkPTEwMzk4X3R4dF9lYXJuIGFuZCBjb3VudD0xKGZyZXF1ZW5jeSkpIFUgz4B0ZXJtKM+DZG9jaWQ9OTI1X3R4dF90cmFkZSBhbmQgY291bnQ9MShmcmVxdWVuY3kpKQoKCmBgYHtzcWwgY29ubmVjdGlvbj0icmV1dGVycyJ9CgpTRUxFQ1QgY291bnQoKikgRlJPTSAoCglTRUxFQ1QgdGVybSBGUk9NIGZyZXF1ZW5jeQoJV0hFUkUgZG9jaWQgPSAnMTAzOThfdHh0X2Vhcm4nCglBTkQgY291bnQgPSAxCglVTklPTiBTRUxFQ1QgdGVybSBGUk9NIGZyZXF1ZW5jeQoJV0hFUkUgZG9jaWQgPSAnOTI1X3R4dF90cmFkZScKCUFORCBjb3VudCA9IDEpOwoKYGBgCgoKV3JpdGUgYW4gU1FMIHN0YXRlbWVudCB0byBjb3VudCB0aGUgbnVtYmVyIG9mIGRvY3VtZW50cyBjb250YWluaW5nIHRoZSB3b3JkICJwYXJsaWFtZW50LiIKCmBgYHtzcWwgY29ubmVjdGlvbj0icmV1dGVycyJ9CgpTRUxFQ1QgY291bnQoKikgRlJPTSAoCglTRUxFQ1QgZG9jaWQgRlJPTSBmcmVxdWVuY3kKCVdIRVJFIHRlcm0gPSAnbGF3JwoJQU5EIGNvdW50ID4gMAoJVU5JT04gU0VMRUNUIGRvY2lkIEZST00gZnJlcXVlbmN5CglXSEVSRSB0ZXJtID0gJ2xlZ2FsJwoJQU5EIGNvdW50ID4gMCk7CgpgYGAKCgpXcml0ZSBhbiBTUUwgc3RhdGVtZW50IHRvIGZpbmQgYWxsIGRvY3VtZW50cyB0aGF0IGhhdmUgbW9yZSB0aGFuIDMwMCB0b3RhbCB0ZXJtcywgaW5jbHVkaW5nIGR1cGxpY2F0ZSB0ZXJtcy4KCmBgYHtzcWwgY29ubmVjdGlvbj0icmV1dGVycyJ9CgpTRUxFQ1QgQ09VTlQoKikgRlJPTSAoCQoJU0VMRUNUIGRvY2lkLCBUb3RhbCBGUk9NICgKCQlTRUxFQ1QgZG9jaWQsIFNVTShjb3VudC9jb3VudCkgYXMgVG90YWwgRlJPTSBmcmVxdWVuY3kKCQlHUk9VUCBCWSBkb2NpZAoJCU9SREVSIEJZIGRvY2lkKQoJCVdIRVJFIFRvdGFsID4gMzAwCik7CgpgYGAKCldyaXRlIGFuIFNRTCBzdGF0ZW1lbnQgdG8gY291bnQgdGhlIG51bWJlciBvZiB1bmlxdWUgZG9jdW1lbnRzIHRoYXQgY29udGFpbiBib3RoIHRoZSB3b3JkICd0cmFuc2FjdGlvbnMnIGFuZCB0aGUgd29yZCAnd29ybGQnLgoKYGBge3NxbCBjb25uZWN0aW9uPSJyZXV0ZXJzIn0KClNFTEVDVCBDT1VOVCgqKSBGUk9NICgKCQoJU0VMRUNUIGRvY2lkIEZyb20gZnJlcXVlbmN5CglXSEVSRSBURVJNID0gJ3RyYW5zYWN0aW9ucycKCQoJSU5URVJTRUNUCgkKCVNFTEVDVCBkb2NpZCBGcm9tIGZyZXF1ZW5jeQoJV0hFUkUgVEVSTSA9ICd3b3JsZCcKKTsKCmBgYAoKCg==</div>
 
 
 
