@@ -9,8 +9,6 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r setup}
 
-knitr::opts_knit$set(root.dir = "~/Desktop/R files/R markdown SQL Queries")
-
 library(DBI)
 reuters <- dbConnect(RSQLite::SQLite(), dbname = "reuters.db")
 
