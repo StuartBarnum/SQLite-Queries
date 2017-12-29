@@ -1,0 +1,61 @@
+---
+title: "Matrix Multiplication for Text Analytics"
+author: "Stuart Barnum"
+date: "12/29/2017"
+output: html_document
+---
+
+
+```{r setup}
+
+#Requires that reuters.db and matrix.db be in the working directory
+
+library(RSQLite)
+library(DBI)
+
+matrix <- dbConnect(RSQLite::SQLite(), dbname = "matrix.db")
+
+reuters <- dbConnect(RSQLite::SQLite(), dbname = "reuters.db")
+
+```
+
+
+The contents of any matrix can be specified in a three column table, in which the first column contains specifications of row numbers of the matrix, the second column contains specifications of column numbers of the matrix, and the third column contains the entries of the matrix. For example, if the entry of the matrix at (matrix) row j and (matrix) column k is m, then the three-column table contains the row (j, k, m). This method can provide an efficient and useful means of representing very large but "sparse" matrices, in which most of the entries are zero (in which case only the nonzero entries need be listed in the table).
+
+The following query conducts "matrix multiplication" on matrices thus speicified in a database. (Although the matrices multiplied, A and B, are within matrix.db, the query works for any two matrices A and B in the three-collumn format, so long as its columns are suitably labeled.)
+
+Coursera exercise: Express A X B as an SQL query 
+
+```{sql connection="matrix"}
+
+SELECT row, col, SUM(product) FROM (
+	SELECT a.row_num as row, b.col_num as col, a.value * b.value AS product
+		FROM A a, B b
+		WHERE a.col_num = b.row_num)
+	GROUP BY row, col; 
+
+```
+
+
+Each row of the Reuters dataset corresponds to a word that occurs in at least one of the documents that is covered by the data, with each row corresponding to one of the documents. Each entry, then, gives the frequency of the word (corresponding to the column) in the document (corresponding to the row). Given this representation of the word counts, the product of the matrix (the dataset) with its transpose provides a measure of document similarity, based on word count. Thus the following exercise.
+
+Coursera exercise: Use the above results to produce a query that produces the product of the Reuters dataset (which has the form of a matrix) with it transpose. 
+
+```{sql connection="reuters"}
+
+SELECT row, col, SUM(product) FROM (
+	SELECT a.docid as row, b.docid as col, a.count * b.count AS product
+		FROM frequency a, frequency b
+		WHERE a.term = b.term)
+	GROUP BY row, col;
+		
+
+```
+
+
+
+
+
+
+
+
