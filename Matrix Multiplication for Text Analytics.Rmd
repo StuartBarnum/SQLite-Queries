@@ -5,6 +5,8 @@ date: "12/29/2017"
 output: html_document
 ---
 
+##Selected text analytics exercises from the Coursera course Data Manipulation at Scale (from the University of Washington)
+
 
 ```{r setup}
 
@@ -37,9 +39,9 @@ SELECT row, col, SUM(product) FROM (
 ```
 
 
-Each row of the Reuters dataset corresponds to a word that occurs in at least one of the documents that is covered by the data, with each row corresponding to one of the documents. Each entry, then, gives the frequency of the word (corresponding to the column) in the document (corresponding to the row). Given this representation of the word counts, the product of the matrix (the dataset) with its transpose provides a measure of document similarity, based on word count. Thus the following exercise.
+Each column of the Reuters dataset corresponds to a word that occurs in at least one of the documents that is covered by the data, with each row corresponding to one of the documents. Each entry, then, gives the frequency of the word (corresponding to the column) in the document (corresponding to the row). Given this representation of the word counts, the product of the matrix (the dataset) with its transpose provides a measure of document similarity, based on word count. Thus the following exercise.
 
-Coursera exercise: Use the above results to produce a query that produces the product of the Reuters dataset (which has the form of a matrix) with it transpose.   
+Coursera exercise: Write an SQL query that produces the product of the Reuters dataset (which has the form of a matrix) with its transpose.   
 
 ```{sql connection="reuters"}
 
@@ -51,6 +53,36 @@ SELECT row, col, SUM(product) FROM (
 		
 
 ```
+
+
+Find the best matching document to the keyword query "washington taxes treasury". Then, compute the similarity matrix again, but filter for only similarities involving the "query document": docid = 'q'.
+
+```{sql connection="reuters"}
+
+SELECT row, col, SUM(product) FROM (
+	SELECT a.docid as row, b.docid as col, a.count * b.count AS product
+		FROM (SELECT * FROM frequency
+		UNION
+		SELECT 'q' as docid, 'washington' as term, 1 as count 
+		UNION
+		SELECT 'q' as docid, 'taxes' as term, 1 as count
+		UNION 
+		SELECT 'q' as docid, 'treasury' as term, 1 as count) a, 
+		(SELECT * FROM frequency
+		UNION
+		SELECT 'q' as docid, 'washington' as term, 1 as count 
+		UNION
+		SELECT 'q' as docid, 'taxes' as term, 1 as count
+		UNION 
+		SELECT 'q' as docid, 'treasury' as term, 1 as count) b
+	WHERE a.term = b.term)
+GROUP BY row, col;
+
+
+```
+
+
+
 
 
 
