@@ -64,7 +64,7 @@ SELECT COUNT(*) FROM (
 
 ```
 
-Write an SQL statement to count the number of unique documents that contain both the word 'transactions' and the word 'world'.
+Coursera exercise: Write an SQL statement to count the number of unique documents that contain both the word 'transactions' and the word 'world'.
 
 ```{sql connection="reuters"}
 
