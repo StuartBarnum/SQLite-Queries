@@ -1,6 +1,8 @@
 ---
 title: "Relational Algebra Implementations"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 Selected exercises from Coursera's Data Manipulation at Scale (University of Washington) covering relational algebra and relational databases.
